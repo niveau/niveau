@@ -1,0 +1,29 @@
+{
+  "name": "node-log-level",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "set-log-level": "./set-log-level.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gvachkov/node-log-level.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gvachkov/node-log-level/issues"
+  },
+  "homepage": "https://github.com/gvachkov/node-log-level#readme",
+  "dependencies": {
+    "cf-services": "^2.0.1",
+    "lodash": "^4.17.4",
+    "redis": "^2.8.0",
+    "tmatch": "^3.1.0"
+  }
+}
