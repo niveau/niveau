@@ -22,6 +22,8 @@ function readLogConfig() {
     console.log('New log config:', config);
     try {
       logConfig = JSON.parse(config);
+      logConfig.request.url = RegExp(logConfig.request.url);
+      logConfig.request.headers = _.mapValues(logConfig.request.headers, RegExp);
     } catch (e) {
       console.error('Failed to parse log config', e);
     }
@@ -56,23 +58,13 @@ function match(req) {
   console.log('req.url', req.url);
   if (tmatch(req, logConfig.request)) {
     console.log('match');
+    // let c = decr();
+    // if (c < 0) return;
+    // if (c === 0) {
+    //   del();
+    //   logConfig = null;
+    // }
     return logConfig;
   }
   console.log('no match');
 }
-
-/*
-{
-  request: {
-    $url: "/fdff/",
-    headers: {
-      x-ala-bala: "sdfsds"
-    },
-    ip:
-  },
-  expire: '1h',
-  log: {
-    level: 'info'
-  }
-}
-*/
