@@ -5,7 +5,7 @@ const assert = require('assert');
 const cmdParse = require('minimist');
 const redis = require('redis');
 const timeparse = require('timeparse');
-const { LOG_CONFIG_KEY, readRedisOptions } = require('./common');
+const { LOG_CONFIG_KEY, readRedisOptions } = require('./lib/common');
 
 const cmdOptions = cmdParse(process.argv.slice(2), {
   alias: {

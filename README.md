@@ -1,6 +1,8 @@
 # niveau
 Node.js package to switch log level per request in Cloud Foundry
 
+:construction: **UNDER SCONSTRUCTION**
+
 ## Goals
 * Change the log level without restart - no downtime
 * Change the log level per request. Setting the log level to debug on an app with high load could result in log flood and even loss of log messages.
