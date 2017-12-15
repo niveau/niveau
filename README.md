@@ -1,7 +1,7 @@
 # niveau
 Node.js package to switch log level per request in Cloud Foundry
 
-:construction: **UNDER SCONSTRUCTION**
+:construction: **UNDER CONSTRUCTION**
 
 ## Goals
 * Change the log level without restart - no downtime
