@@ -1,4 +1,4 @@
-# node-log-level
+# niveau
 Node.js package to switch log level per request in Cloud Foundry
 
 ## Goals
@@ -11,7 +11,7 @@ Node.js package to switch log level per request in Cloud Foundry
   - Request count based
 * Integrate with different logging libraries. Logging lib agnostic.
 
-## Implementation
+## Design
 We need some persistence of the log level, so new instances can load it.
 To achieve this, we use Redis as it provides both storage and change notification via [keyspace notifications](https://redis.io/topics/notifications).
 
@@ -28,14 +28,14 @@ Deployment options:
 * As part of an existing node.js app
   - No additional app
 
-Should be bound to a Redis instance.
+Application should be bound to a Redis instance.
 
 ## Future
 ### CF CLI plugin to change log level
 Redis uses TCP not HTTP, so it requires a tunnel (cf ssh) to connect it from outside CF. This is an additional obstacle for a CF CLI plugin.
 
 ## Usage
-This package provide an executable script to change the log level.
+This package provides an executable script to change the log level.
 The provided log level will be used only for HTTP requests that match the given options.
 Each command invokation overwrites any previous settings.
 
@@ -71,7 +71,7 @@ cf logs --recent APP-NAME
 ### Examples
 Set log level to debug for requests on URLs starting with `/api/v2`. Reset log level after 15 min.
 ```sh
-set-log-level -u '^/api/v2/' --expire 15m debug
+set-log-level -l '^/api/v2/' --expire 15m debug
 ```
 
 
