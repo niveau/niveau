@@ -1,6 +1,6 @@
 {
   "name": "niveau",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Node.js package to switch log level per request in Cloud Foundry",
   "main": "lib",
   "scripts": {
@@ -20,7 +20,10 @@
     "type": "git",
     "url": "git+https://github.com/niveau/niveau.git"
   },
-  "keywords": ["logging", "cloud-foundry"],
+  "keywords": [
+    "logging",
+    "cloud-foundry"
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/niveau/niveau/issues"
