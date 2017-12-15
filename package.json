@@ -13,6 +13,9 @@
     "lib",
     "set-log-level.js"
   ],
+  "engines": {
+    "node": ">=6"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/niveau/niveau.git"
