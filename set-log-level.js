@@ -28,9 +28,11 @@ let headers = _.reduce(cmdOptions.header, (result, h) => {
   result[h.slice(0, i)] = h.slice(i + 1);
 }, {});
 
+let expire;
 if (cmdOptions.expire) {
-  if (cmdOptions.expire.endsWith('r'))
-    let expire = timeparse(cmdOptions.expire, 's');
+  if (!cmdOptions.expire.endsWith('r')) {
+    expire = timeparse(cmdOptions.expire, 's');
+  }
 }
 
 let logConfig = {
