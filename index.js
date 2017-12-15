@@ -2,7 +2,7 @@
 
 const redis = require('redis');
 const _ = require('lodash');
-const tmatch = require('tmatch');
+const match = require('./match');
 const { LOG_CONFIG_KEY, readRedisOptions } = require('./common');
 
 let logConfig;
@@ -21,9 +21,13 @@ function readLogConfig() {
     }
     console.log('New log config:', config);
     try {
-      logConfig = JSON.parse(config);
-      logConfig.request.url = RegExp(logConfig.request.url);
-      logConfig.request.headers = _.mapValues(logConfig.request.headers, RegExp);
+      logConfig = config && JSON.parse(config);
+      if (logConfig && logConfig.request) {
+        logConfig.request.url = logConfig.request.url && RegExp(logConfig.request.url);
+        logConfig.request.ip = logConfig.request.ip && RegExp(logConfig.request.ip);
+        logConfig.request.headers = logConfig.request.headers &&
+          _.mapValues(logConfig.request.headers, RegExp);
+      }
     } catch (e) {
       console.error('Failed to parse log config', e);
     }
@@ -44,27 +48,19 @@ subscriber.on('message', function (channel, message) {
 subscriber.subscribe('__keyspace@0__:' + LOG_CONFIG_KEY);
 
 module.exports = function dynLogLevel(req, res, next) {
-  let m = match(req);
-  if (m) {
-    req.logLevel = m.level;
+  if (logConfig && logConfig.request && match(req, logConfig.request)) {
+    console.log('match');
+    req.logLevel = logConfig.level;
   }
   next();
 };
 
-function match(req) {
-  if (!logConfig) {
-    return;
-  }
-  console.log('req.url', req.url);
-  if (tmatch(req, logConfig.request)) {
-    console.log('match');
-    // let c = decr();
-    // if (c < 0) return;
-    // if (c === 0) {
-    //   del();
-    //   logConfig = null;
-    // }
-    return logConfig;
-  }
-  console.log('no match');
-}
+
+
+// request counter idea
+  // let c = decr();
+  // if (c < 0) return;
+  // if (c === 0) {
+  //   del();
+  //   logConfig = null;
+  // }
