@@ -4,7 +4,8 @@
   "description": "Node.js package to switch log level per request in Cloud Foundry",
   "main": "lib",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "pretest": "eslint .",
+    "test": "mocha"
   },
   "bin": {
     "set-log-level": "./set-log-level.js"
@@ -38,5 +39,8 @@
     "mocha": "^4.0.1",
     "redis": "^2.8.0",
     "timeparse": "^1.0.0"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2"
   }
 }
