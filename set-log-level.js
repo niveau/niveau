@@ -1,4 +1,7 @@
 #!/usr/bin/env node
+'use strict';
+
+/* eslint-disable no-console */
 
 const _ = require('lodash');
 const assert = require('assert');
@@ -53,7 +56,8 @@ client.on("error", function (err) {
 });
 
 client.config('set', 'notify-keyspace-events', 'KA', (err, reply) => {
-  err ? console.error('notify-keyspace-events', err) : console.log('notify-keyspace-events', reply);
+  err ? console.error('notify-keyspace-events', err) :
+    console.log('notify-keyspace-events', reply);
 
   let params = [LOG_CONFIG_KEY, JSON.stringify(logConfig)];
   expire && params.push('EX', expire);

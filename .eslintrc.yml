@@ -3,4 +3,5 @@ env:
   node: true
   es6: true
 rules:
-  no-console: off
+  max-len: [error, 80]
+  indent: [error, 2]
