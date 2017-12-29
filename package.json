@@ -4,8 +4,9 @@
   "description": "Node.js package to switch log level per request in Cloud Foundry",
   "main": "lib",
   "scripts": {
-    "pretest": "eslint .",
-    "test": "mocha"
+    "pretest": "eslint --ignore-path .gitignore .",
+    "test": "nyc --check-coverage --statements 95 --per-file mocha",
+    "coverage": "nyc report --reporter=html && open coverage/index.html"
   },
   "bin": {
     "set-log-level": "./set-log-level.js"
@@ -41,6 +42,7 @@
     "timeparse": "^1.0.0"
   },
   "devDependencies": {
-    "chai": "^4.1.2"
+    "chai": "^4.1.2",
+    "nyc": "^11.4.1"
   }
 }
