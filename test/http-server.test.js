@@ -68,6 +68,30 @@ describe('in http server', () => {
     ], done);
   });
 
+  it('sets the log level only for requests with matching header', done => {
+    setConfig({
+      level: 'debug',
+      request: {
+        headers:{
+          'x-header': 'abc'
+        }
+      }
+    });
+    async.parallel([
+      cb => request(app)
+        .get('/')
+        .expect('logLevel: undefined', cb),
+      cb => request(app)
+        .get('/match')
+        .set('x-header', 'xyz')
+        .expect('logLevel: undefined', cb),
+      cb => request(app)
+        .get('/match')
+        .set('x-header', 'abcd')
+        .expect('logLevel: debug', cb)
+    ], done);
+  });
+
   it('emits "config" event on config change', () => {
     const config = { level: 'warning', custom: 'value' };
     setConfig(config);
