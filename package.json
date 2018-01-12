@@ -5,7 +5,8 @@
   "main": "lib",
   "scripts": {
     "pretest": "eslint --ignore-path .gitignore .",
-    "test": "nyc --check-coverage --statements 95 --per-file mocha",
+    "test": "nyc mocha",
+    "itest": "nyc mocha test itest",
     "coverage": "nyc report --reporter=html && open coverage/index.html"
   },
   "bin": {

@@ -44,8 +44,7 @@ describe('common', () => {
       expect(options.password).to.equal('secret');
     });
 
-    it('returns options from service binding referenced by LOG_CONFIG_SERVICE',
-    () => {
+    it('returns options from service binding referenced by LOG_CONFIG_SERVICE', () => {
       process.env.VCAP_SERVICES = JSON.stringify({
         "redis": [
           {
