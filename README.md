@@ -78,6 +78,22 @@ Set log level to debug for requests on URLs starting with `/api/v2`. Reset log l
 set-log-level -l '^/api/v2/' --expire 15m debug
 ```
 
+## Test
+Run static code checks with _eslint_ and unit tests:
+```sh
+npm test
+```
+
+Integration tests require Redis to run on localhost on default port 6379.
+Install [docker](https://www.docker.com/community-edition), unless you have it already.
+Start Redis:
+```sh
+docker run -d -p 6379:6379 --rm redis
+```
+Run the integration tests against Redis:
+```sh
+npm run itest
+```
 
 [1]: https://docs.cloudfoundry.org/devguide/using-tasks.html
 [ssh]: https://docs.cloudfoundry.org/devguide/deploy-apps/ssh-apps.html
