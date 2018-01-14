@@ -6,8 +6,9 @@
   "scripts": {
     "pretest": "eslint --ignore-path .gitignore .",
     "test": "nyc mocha",
+    "preitest": "npm run pretest",
     "itest": "nyc mocha test itest",
-    "coverage": "nyc report --reporter=html && open coverage/index.html"
+    "coverage": "nyc report --reporter=html && echo Open coverage/index.html"
   },
   "bin": {
     "set-log-level": "./set-log-level.js"
