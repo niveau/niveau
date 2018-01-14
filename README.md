@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/niveau/niveau.svg?branch=master)](https://travis-ci.org/niveau/niveau)
+
 # niveau
 Node.js package to switch log level per request in Cloud Foundry
 
