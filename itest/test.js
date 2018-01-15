@@ -7,7 +7,7 @@ describe('close', function() {
   
   it('should allow the app to exit', () => {
     proc.execSync('node itest/app/close.js', {
-      timeout: 2000
+      timeout: 4000
     });
   });
 });
