@@ -1,6 +1,8 @@
 [![Build Status](https://travis-ci.org/niveau/niveau.svg?branch=master)](https://travis-ci.org/niveau/niveau)
+[![Greenkeeper badge](https://badges.greenkeeper.io/niveau/niveau.svg)](https://greenkeeper.io/)
 
 # niveau
+
 Node.js package to switch log level per request in Cloud Foundry
 
 :construction: **UNDER CONSTRUCTION**
