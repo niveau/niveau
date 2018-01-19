@@ -12,8 +12,8 @@ Node.js package to switch log level per request in Cloud Foundry
 * Change the log level per request. Setting the log level to debug on an app with high load could result in log flood and even loss of log messages.
 * All application instances use the same log level.
 * Set the log level from server-side as it is often hard to change client requests. This is also less susceptible to DoS attacks.
-* Temporary log level change 
-  - Time based 
+* Temporary log level change
+  - Time based
   - Request count based
 * Integrate with different logging libraries. Logging lib agnostic.
 
@@ -21,17 +21,17 @@ Node.js package to switch log level per request in Cloud Foundry
 We need some persistence of the log level, so new instances can load it.
 To achieve this, we use Redis as it provides both storage and change notification via [keyspace notifications](https://redis.io/topics/notifications).
 
-This package provides a CLI interface to chnage the log configuration.
+This package provides a CLI interface to change the log configuration.
 There are several options to invoke it:
 * [CF task][1]
 * [ssh] to a running application
 
 Deployment options:
 * As a separate app
-  - Can be used for application that do not run on Node.js
+  - Can be used for applications that do not run on Node.js
   - May not run all the time, executing CF task will start a temporary instance automatically
   - One more app to manage
-* As part of an existing node.js app
+* As part of an existing Node.js app
   - No additional app
 
 Application should be bound to a Redis instance.
@@ -43,7 +43,7 @@ Redis uses TCP not HTTP, so it requires a tunnel (cf ssh) to connect it from out
 ## Usage
 This package provides an executable script to change the log level.
 The provided log level will be used only for HTTP requests that match the given options.
-Each command invokation overwrites any previous settings.
+Each command invocation overwrites any previous settings.
 
 ```sh
 set-log-level [options...] <level>
@@ -55,7 +55,7 @@ set-log-level [options...] <level>
 * -x, --expire \<value> - expire value can be either time (with `s/m/h` suffix) or request count (with `r` suffix)
 * -r, --reset - reset log level (not implemented yet)
 
-### Invoke via SSH to applicaiton
+### Invoke via SSH to application
 Log into the container of a running application and execute the command:
 ```sh
 cf ssh APP-NAME
