@@ -8,7 +8,8 @@
     "test": "nyc mocha",
     "preitest": "npm run pretest",
     "itest": "nyc mocha test itest",
-    "coverage": "nyc report --reporter=html && echo Open coverage/index.html"
+    "coverage": "nyc report --reporter=html && echo Open coverage/index.html",
+    "redis": "docker run -d -p 6379:6379 --rm redis"
   },
   "bin": {
     "set-log-level": "./set-log-level.js"
