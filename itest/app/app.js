@@ -1,12 +1,10 @@
 'use strict';
 
-/* eslint-disable no-console */
-
 const express = require('express');
 
 const niveau = require('../..');
 
-let nv = niveau({});
+let nv = niveau();
 
 let app = express();
 app.use(nv);
