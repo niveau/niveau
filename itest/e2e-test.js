@@ -2,6 +2,7 @@
 
 const proc = require('child_process');
 const _ = require('lodash');
+const async = require('async');
 const request = require('supertest');
 const debug = require('debug')('niveau:e2e-test');
 
@@ -9,8 +10,9 @@ function exec(cmd) {
   return proc.execSync(cmd, { encoding: 'utf8' });
 }
 
-function startApp(done) {
-  let appProc = proc.spawn('node', ['itest/app/app.js'], {
+function startApp(name, done) {
+  done = _.once(done);
+  let appProc = proc.spawn('node', ['itest/app/app.js', name], {
     stdio: ['ignore', 'pipe', 'inherit'], // pipe stdout
     encoding: 'utf8'
   });
@@ -37,28 +39,73 @@ function startApp(done) {
 
 describe('End-to-end tests', function () {
   this.timeout(5000);
-  let app;
+  let app, app2;
 
   before('Start test app', done => {
-    done = _.once(done);
-    exec('./set-log-level.js --reset');    
-    startApp((err, a) => {
-      app = a; 
+    exec('./set-log-level.js --reset');
+    startApp('A', (err, a) => {
+      app = a;
       done(err)
     });
   });
 
   after('Stop test app', () => {
-    app.process.kill();
+    app && app.process.kill();
   });
 
   it('fetch default log level', done => {
-    app.get('/').expect(200, 'logLevel: undefined', done);
+    app.get('/').expect(200, 'A: undefined', done);
   });
 
   it('change log level for all requests', done => {
     exec('./set-log-level.js debug');
-    app.get('/').expect(200, 'logLevel: debug', done);
+    app.get('/').expect(200, 'A: debug', done);
+  });
+
+  it('change log level for requests with matching url', done => {
+    exec('./set-log-level.js --url /a warning');
+    async.parallel([
+      cb => app.get('/a').expect('A: warning', cb),
+      cb => app.get('/b').expect('A: undefined', cb)
+    ], done);
+  });
+
+  it('log config expires', done => {
+    exec('./set-log-level.js error --expire 1s');
+    async.series([
+      cb => app.get('/').expect('A: error', cb),
+      cb => setTimeout(cb, 2000),
+      cb => app.get('/').expect('A: undefined', cb)
+    ], done);
+  });
+
+  describe('Multiple apps', () => {
+    before('Start second app', done => {
+      exec('./set-log-level.js silly');
+      startApp('B', (err, a) => {
+        app2 = a;
+        done(err)
+      });
+    });
+
+    after('Stop second app', () => {
+      app2 && app2.process.kill();
+    });
+
+    it('new apps use the current log config', done => {
+      async.parallel([
+        cb => app.get('/').expect('A: silly', cb),
+        cb => app2.get('/').expect('B: silly', cb),
+      ], done);
+    });
+
+    it('all apps get the new log config', done => {
+      exec('./set-log-level.js dummy');
+      async.parallel([
+        cb => app.get('/').expect('A: dummy', cb),
+        cb => app2.get('/').expect('B: dummy', cb),
+      ], done);
+    });
   });
 
 });

@@ -8,10 +8,8 @@ const assert = require('assert');
 const cmdParse = require('minimist');
 const debug = require('debug')('niveau:set-level');
 const redis = require('redis');
-const timeparse = require('timeparse');
+const timeParse = require('timeparse');
 const { LOG_CONFIG_KEY, readRedisOptions } = require('./lib/common');
-
-const LOG_LEVELS = ['error', 'warn', 'info', 'verbose', 'debug', 'silly'];
 
 const cmdOptions = cmdParse(process.argv.slice(2), {
   alias: {
@@ -27,29 +25,24 @@ debug('Command line options:', cmdOptions);
 if (cmdOptions.reset) {
   assert(
     !cmdOptions._.length &&
-    !cmdOptions.url &&
-    !cmdOptions.header &&
-    !cmdOptions.ip &&
-    !cmdOptions.expire,
+    !['url', 'header', 'ip', 'expire'].some(opt => opt in cmdOptions),
     'No other options allowed with reset'
   );
 } else {
   assert(cmdOptions._.length === 1, 'Provide exactly one log level');
   var level = cmdOptions._[0];
-  assert(LOG_LEVELS.some(l => l === level.toLowerCase()),
-    `Valid log levels: ${LOG_LEVELS}`);
 }
 
 let headers = _.reduce(cmdOptions.header, (result, h) => {
   let i = h.indexOf(':');
   assert(i > 0, 'headers');
-  result[h.slice(0, i)] = h.slice(i + 1);
+  result[h.slice(0, i).trim()] = h.slice(i + 1).trim();
 }, {});
 
 let expire;
 if (cmdOptions.expire) {
   if (!cmdOptions.expire.endsWith('r')) {
-    expire = timeparse(cmdOptions.expire, 's');
+    expire = timeParse(cmdOptions.expire, 's');
   }
 }
 
