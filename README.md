@@ -51,9 +51,9 @@ set-log-level [options...] <level>
 ### Options
 * -l, --url \<regex> - matches request URL (without protocol, host, port)
 * -h, --header \<name>:\<regex> - matches given request header value
-* -i, --ip \<mask> - matches sender IP address (not implemented yet)
+* -i, --ip \<mask> - matches sender IP address
 * -x, --expire \<value> - expire value can be either time (with `s/m/h` suffix) or request count (with `r` suffix)
-* -r, --reset - reset log level (not implemented yet)
+* -r, --reset - reset log level
 
 ### Invoke via SSH to application
 Log into the container of a running application and execute the command:
