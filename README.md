@@ -36,10 +36,6 @@ Deployment options:
 
 Application should be bound to a Redis instance.
 
-## Future
-### CF CLI plugin to change log level
-Redis uses TCP not HTTP, so it requires a tunnel (cf ssh) to connect it from outside CF. This is an additional obstacle for a CF CLI plugin.
-
 ## Usage
 This package provides an executable script to change the log level.
 The provided log level will be used only for HTTP requests that match the given options.
@@ -96,6 +92,10 @@ Run the integration tests against Redis:
 ```sh
 npm run itest
 ```
+
+## Future
+### CF CLI plugin to change log level
+Redis uses TCP not HTTP, so it requires a tunnel (cf ssh) to connect it from outside CF. This is an additional obstacle for a CF CLI plugin.
 
 [1]: https://docs.cloudfoundry.org/devguide/using-tasks.html
 [ssh]: https://docs.cloudfoundry.org/devguide/deploy-apps/ssh-apps.html
