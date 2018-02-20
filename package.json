@@ -1,6 +1,6 @@
 {
   "name": "niveau",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Node.js package to switch log level per request in Cloud Foundry",
   "main": "lib",
   "scripts": {
