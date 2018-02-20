@@ -17,6 +17,11 @@ Node.js package to switch log level per request in Cloud Foundry
   - Request count based
 * Integrate with different logging libraries. Logging lib agnostic.
 
+## Requirements
+* Node.js 6 (or later)
+* Cloud Foundry
+* Redis
+
 ## Design
 We need some persistence of the log level, so new instances can load it.
 To achieve this, we use Redis as it provides both storage and change notification via [keyspace notifications](https://redis.io/topics/notifications).
@@ -27,31 +32,68 @@ There are several options to invoke it:
 * [ssh] to a running application
 
 Deployment options:
-* As a separate app
-  - Can be used for applications that do not run on Node.js
-  - May not run all the time, executing CF task will start a temporary instance automatically
-  - One more app to manage
 * As part of an existing Node.js app
   - No additional app
+* As a separate app
+  - Can be used with applications that do not run on Node.js
+  - Does not need to run. Executing CF task will start a temporary instance automatically
+  - One more app to manage
 
-Application should be bound to a Redis instance.
+In any case the application should be bound to a Redis instance.
 
 ## Usage
+
+### In the application
+
+Install the package.
+```sh
+npm install --save niveau
+```
+With npm 5 you don't need the `--save` option.
+
+```js
+const express = require('express');
+const niveau = require('niveau');
+
+let nv = niveau(/* redis options */);
+nv.on('error', err => {
+  console.error(err);
+});
+nv.on('request', (req, config) => {
+  // set log level for req to config.level 
+});
+
+let app = express();
+app.use(nv);
+```
+
+### Changing the log level
 This package provides an executable script to change the log level.
 The provided log level will be used only for HTTP requests that match the given options.
 Each command invocation overwrites any previous settings.
 
 ```sh
-set-log-level [options...] <level>
+set-log-level [options...] [<level>]
 ```
-### Options
+#### Options
 * -l, --url \<regex> - matches request URL (without protocol, host, port)
 * -h, --header \<name>:\<regex> - matches given request header value
-* -i, --ip \<mask> - matches sender IP address
-* -x, --expire \<value> - expire value can be either time (with `s/m/h` suffix) or request count (with `r` suffix)
-* -r, --reset - reset log level
+* -i, --ip \<regex> - matches sender IP address
+* -x, --expire \<value> - expiration time with `s/m/h` suffix
+* -r, --reset - reset log level to default (do not provide <level>)
+* \<level> - log level to use for matching requests, supported values depend on your log library
 
-### Invoke via SSH to application
+#### Invoke via CF task
+This will start a temporary instance of the application, run the task inside and stop that instance.
+```sh
+cf run-task APP-NAME "set-log-level [options] [<level>]" [-m MEMORY] [--name TASK_NAME]
+```
+Check the output in the logs
+```sh
+cf logs --recent APP-NAME
+```
+
+#### Invoke via SSH to the application
 Log into the container of a running application and execute the command:
 ```sh
 cf ssh APP-NAME
@@ -60,23 +102,17 @@ set-log-level [options...] <level>
 ```
 This is useful if you need to run it multiple times and see the output immediately.
 
-### Invoke via CF task
-This will start a temporary instance of the application, run the task inside and stop that instance.
-```sh
-cf run-task APP-NAME "set-log-level [options] <level>" [-m MEMORY] [--name TASK_NAME]
-```
-Check the output in the logs
-```sh
-cf logs --recent APP-NAME
-```
-
-### Examples
+#### Examples
 Set log level to debug for requests on URLs starting with `/api/v2`. Reset log level after 15 min.
 ```sh
 set-log-level -l '^/api/v2/' --expire 15m debug
 ```
 
 ## Test
+Install all dependencies:
+```sh
+npm install
+```
 Run static code checks with _eslint_ and unit tests:
 ```sh
 npm test
@@ -86,7 +122,7 @@ Integration tests require Redis to run on localhost on default port 6379.
 Install [docker](https://www.docker.com/community-edition), unless you have it already.
 Start Redis:
 ```sh
-docker run -d -p 6379:6379 --rm redis
+npm run redis
 ```
 Run the integration tests against Redis:
 ```sh
