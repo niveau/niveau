@@ -5,8 +5,6 @@
 
 Node.js package to switch log level per request in Cloud Foundry
 
-:construction: **UNDER CONSTRUCTION**
-
 ## Goals
 * Change the log level without restart - no downtime
 * Change the log level per request. Setting the log level to debug on an app with high load could result in log flood and even loss of log messages.
@@ -28,7 +26,7 @@ To achieve this, we use Redis as it provides both storage and change notificatio
 
 This package provides a CLI interface to change the log configuration.
 There are several options to invoke it:
-* [CF task][1]
+* [CF task](https://docs.cloudfoundry.org/devguide/using-tasks.html)
 * [ssh] to a running application
 
 Deployment options:
@@ -51,6 +49,7 @@ npm install --save niveau
 ```
 With npm 5 you don't need the `--save` option.
 
+Configure _niveau_ and add it as a middleware:
 ```js
 const express = require('express');
 const niveau = require('niveau');
@@ -60,7 +59,7 @@ nv.on('error', err => {
   console.error(err);
 });
 nv.on('request', (req, config) => {
-  // set log level for req to config.level 
+  // set log level for this request to config.level 
 });
 
 let app = express();
@@ -119,7 +118,7 @@ npm test
 ```
 
 Integration tests require Redis to run on localhost on default port 6379.
-Install [docker](https://www.docker.com/community-edition), unless you have it already.
+Install [docker], unless you have it already.
 Start Redis:
 ```sh
 npm run redis
@@ -133,5 +132,5 @@ npm run itest
 ### CF CLI plugin to change log level
 Redis uses TCP not HTTP, so it requires a tunnel (cf ssh) to connect it from outside CF. This is an additional obstacle for a CF CLI plugin.
 
-[1]: https://docs.cloudfoundry.org/devguide/using-tasks.html
 [ssh]: https://docs.cloudfoundry.org/devguide/deploy-apps/ssh-apps.html
+[docker]: https://www.docker.com/community-edition
