@@ -9,7 +9,8 @@
     "preitest": "npm run pretest",
     "itest": "nyc mocha test itest",
     "coverage": "nyc report --reporter=html && echo Open coverage/index.html",
-    "redis": "docker run -d -p 6379:6379 --rm redis"
+    "redis": "docker run -d -p 6379:6379 --rm redis",
+    "toc": "markdown-toc -i README.md"
   },
   "bin": {
     "set-log-level": "./set-log-level.js"
@@ -49,6 +50,7 @@
     "chai": "^4.1.2",
     "eslint": "^4.15.0",
     "express": "^4.16.2",
+    "markdown-toc": "^1.2.0",
     "mocha": "^5.0.0",
     "nyc": "^11.4.1",
     "sinon": "^4.2.0",

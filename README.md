@@ -5,6 +5,23 @@
 
 Node.js package to switch log level per request in Cloud Foundry
 
+<!-- toc -->
+
+- [Goals](#goals)
+- [Requirements](#requirements)
+- [Design](#design)
+- [Usage](#usage)
+  * [In the application](#in-the-application)
+  * [Changing the log level](#changing-the-log-level)
+    + [Options](#options)
+    + [Invoke via CF task](#invoke-via-cf-task)
+    + [Invoke via SSH to the application](#invoke-via-ssh-to-the-application)
+    + [Examples](#examples)
+- [Test](#test)
+- [Future](#future)
+
+<!-- tocstop -->
+
 ## Goals
 * Change the log level without restart - no downtime
 * Change the log level per request. Setting the log level to debug on an app with high load could result in log flood and even loss of log messages.
