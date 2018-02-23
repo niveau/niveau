@@ -22,7 +22,7 @@ Node.js package to switch log level per request in Cloud Foundry
     + [Invoke via CF task](#invoke-via-cf-task)
     + [Invoke via SSH to the application](#invoke-via-ssh-to-the-application)
     + [Examples](#examples)
-- [Test](#test)
+- [Contributing](#contributing)
 - [Future](#future)
 
 <!-- tocstop -->
@@ -173,7 +173,7 @@ Set log level to debug for requests on URLs starting with `/api/v2`. Reset log l
 set-log-level -l '^/api/v2/' --expire 15m debug
 ```
 
-## Test
+## Contributing
 Install all dependencies:
 ```sh
 npm install
@@ -182,7 +182,6 @@ Run static code checks with _eslint_ and unit tests:
 ```sh
 npm test
 ```
-
 Integration tests require Redis to run on localhost on default port 6379.
 Install [docker], unless you have it already.
 Start Redis:
@@ -192,6 +191,15 @@ npm run redis
 Run the integration tests against Redis:
 ```sh
 npm run itest
+```
+Generate test coverage report:
+```sh
+npm run coverage
+```
+
+After editing README.md update its table of contents:
+```sh
+npm run toc
 ```
 
 ## Future
