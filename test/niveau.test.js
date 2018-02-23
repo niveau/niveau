@@ -10,10 +10,6 @@ chai.use(require('sinon-chai'));
 
 const niveau = require('..');
 
-function rematch(re) {
-  return value => re.test(value);
-}
-
 describe('niveau', () => {
   let sandbox;
   let redisClient;
@@ -40,7 +36,13 @@ describe('niveau', () => {
   });
 
   function setConfig(config) {
-    redisClient.get.yields(null, JSON.stringify(config));
+    if (config instanceof Error) {
+      redisClient.get.yields(config);
+    } else if (typeof config === 'string') {
+      redisClient.get.yields(null, config);
+    } else {
+      redisClient.get.yields(null, JSON.stringify(config));
+    }
     redisClient.emit('message');
   }
 
@@ -72,30 +74,77 @@ describe('niveau', () => {
     setConfig({
       level: 'debug',
       request: {
-        headers:{
+        headers: {
           'x-header': 'abc'
         }
       }
     });
 
     testLevel({ url: '/' }, undefined);
-    testLevel({ url: '/', headers: {'x-header': 'xyz'} }, undefined);
-    testLevel({ url: '/', headers: {'x-header': 'abcd'} }, 'debug');
+    testLevel({ url: '/', headers: { 'x-header': 'xyz' } }, undefined);
+    testLevel({ url: '/', headers: { 'x-header': 'abcd' } }, 'debug');
   });
 
-  it('emits "error" event in case of invalid config', () => {
+  it('sets the log level only for requests with matching ip', () => {
+    setConfig({
+      level: 'debug',
+      request: {
+        ip: '123'
+      }
+    });
+
+    const req = {
+      url: '/',
+      headers: {},
+      connection: {
+        remoteAddress: '1.2.3.4'
+      }
+    };
+    testLevel(req, undefined);
+    req.connection.remoteAddress = '1.2.3.123';
+    testLevel(req, 'debug');
+  });
+
+  it('emits "error" event in case redis read fails', () => {
+    setConfig(new Error('read error'));
+    expect(errorSpy.args[0][0]).match(/read error/);
+  });
+
+  it('emits "error" event in case redis read fails', () => {
+    setConfig(new Error('read error'));
+    expect(errorSpy.args[0][0]).match(/read error/);
+  });
+
+  it('emits "error" event in case of invalid config JSON', () => {
+    setConfig('{abc');
+    expect(errorSpy.args[0][0]).match(/Could not parse configuration/);
+  });
+
+  it('emits "error" event in case of invalid regex', () => {
     setConfig({
       level: 'debug',
       request: {
         url: '(' // invalid regex
       }
     });
-    expect(errorSpy).calledWithMatch(rematch(/Failed to parse log config/));
+    expect(errorSpy.args[0][0]).match(/Failed to parse log config/);
   });
 
   it('emits "config" event on config change', () => {
     const config = { level: 'warning', custom: 'value' };
     setConfig(config);
+    expect(configSpy).calledWith(config);
+  });
+
+  it('emits "config" event with compiled regex in config', () => {
+    const config = {
+      level: 'warning',
+      request: {
+        url: '^/abc'
+      }
+    };
+    setConfig(config);
+    config.request.url = /^\/abc/;
     expect(configSpy).calledWith(config);
   });
 
@@ -113,7 +162,7 @@ describe('niveau', () => {
 
     testLevel({ url: '/match' }, 'debug');
     expect(requestSpy).calledWith({ url: '/match', logLevel: 'debug' },
-      { level: 'debug', request: { url: /^\/match/ }});
+      { level: 'debug', request: { url: /^\/match/ } });
   });
 
 });
