@@ -12,6 +12,11 @@ Node.js package to switch log level per request in Cloud Foundry
 - [Design](#design)
 - [Usage](#usage)
   * [In the application](#in-the-application)
+    + [niveau([options])](#niveauoptions)
+    + [Event 'error'](#event-error)
+    + [Event 'config'](#event-config)
+    + [Event 'request'](#event-request)
+    + [Log configuration](#log-configuration)
   * [Changing the log level](#changing-the-log-level)
     + [Options](#options)
     + [Invoke via CF task](#invoke-via-cf-task)
@@ -75,17 +80,61 @@ let nv = niveau(/* redis options */);
 nv.on('error', err => {
   console.error(err);
 });
+nv.on('config', config => {
+  // log configuration changed
+});
 nv.on('request', (req, config) => {
+  // request matches logging criteria
   // set log level for this request to config.level
 });
 
 let app = express();
 app.use(nv);
+app.use((req, res, next) => {
+  // req.logLevel - the log level to be used for this request (if present)
+});
 ```
 
+#### niveau([options])
+* `options` Redis connection [options](https://github.com/NodeRedis/node_redis#rediscreateclient) + additional properties:
+  * `redisKey` name of the Redis key that stores the configuration, default is `log-config`
+
+Creates _niveau_ middleware. It matches incoming requests against the criteria in the log configuration.
+For matching requests it sets `logLevel` property on the request object to the log level from the configuration.
+
+The middleware also listens for log configuration changes and emits some events.
+
+#### Event 'error'
+Event arguments:
+* `error` an `Error` object
+
+Emitted in case of error, e.g. Redis connection failed.
+
+#### Event 'config'
+Event arguments:
+* `config` [log configuration](#log-configuration) object
+
+Emitted when log configuration is changed or deleted.
+
+#### Event 'request'
+Event arguments:
+* `request` [http.IncomingMessage](https://nodejs.org/api/http.html#http_class_http_incomingmessage)
+* `config` [log configuration](#log-configuration) object
+
+Emitted when an HTTP request matches the criteria in the log configuration.
+
+#### Log configuration
+Log configuration object:
+* `request` request matching criteria,
+if missing or empty, the log level should be used for all requests
+  * `url` `RegExp` to match against the request URL
+  * `ip` `RegExp` to match against the client IP address
+  * `headers` an object to match against request headers, each values is a `RegExp`
+* `level` log level as a string to use for matching requests
+
 ### Changing the log level
-This package provides an executable script to change the log level.
-The provided log level will be used only for HTTP requests that match the given options.
+This package provides a command line tool to change the log level.
+The provided log level will be used only for HTTP requests that match _all_ the given criteria.
 Each command invocation overwrites any previous settings.
 
 ```sh
@@ -96,7 +145,7 @@ set-log-level [options...] [<level>]
 * -h, --header \<name>:\<regex> - matches given request header value
 * -i, --ip \<regex> - matches sender IP address
 * -x, --expire \<value> - expiration time with `s/m/h` suffix
-* -r, --reset - reset log level to default (do not provide <level>)
+* -r, --reset - reset log level to default (do not provide level)
 * \<level> - log level to use for matching requests, supported values depend on your log library
 
 #### Invoke via CF task
