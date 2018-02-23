@@ -59,7 +59,7 @@ nv.on('error', err => {
   console.error(err);
 });
 nv.on('request', (req, config) => {
-  // set log level for this request to config.level 
+  // set log level for this request to config.level
 });
 
 let app = express();
@@ -129,8 +129,8 @@ npm run itest
 ```
 
 ## Future
-### CF CLI plugin to change log level
-Redis uses TCP not HTTP, so it requires a tunnel (cf ssh) to connect it from outside CF. This is an additional obstacle for a CF CLI plugin.
+Ideas for [new features](https://github.com/niveau/niveau/labels/enhancement) are tracked in GitHub issues. You are encouraged to comment, add new ideas and contribute in any way.
+
 
 [ssh]: https://docs.cloudfoundry.org/devguide/deploy-apps/ssh-apps.html
 [docker]: https://www.docker.com/community-edition
