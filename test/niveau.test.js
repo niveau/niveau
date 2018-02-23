@@ -10,11 +10,15 @@ chai.use(require('sinon-chai'));
 
 const niveau = require('..');
 
+function rematch(re) {
+  return value => re.test(value);
+}
+
 describe('niveau', () => {
   let sandbox;
   let redisClient;
   let nv;
-  let configSpy, requestSpy;
+  let errorSpy, configSpy, requestSpy;
 
   beforeEach(() => {
     sandbox = sinon.sandbox.create();
@@ -26,6 +30,7 @@ describe('niveau', () => {
     sandbox.stub(redis, 'createClient').returns(redisClient);
 
     nv = niveau({});
+    nv.on('error', errorSpy = sandbox.spy());
     nv.on('config', configSpy = sandbox.spy());
     nv.on('request', requestSpy = sandbox.spy());
   });
@@ -78,10 +83,20 @@ describe('niveau', () => {
     testLevel({ url: '/', headers: {'x-header': 'abcd'} }, 'debug');
   });
 
+  it('emits "error" event in case of invalid config', () => {
+    setConfig({
+      level: 'debug',
+      request: {
+        url: '(' // invalid regex
+      }
+    });
+    expect(errorSpy).calledWithMatch(rematch(/Failed to parse log config/));
+  });
+
   it('emits "config" event on config change', () => {
     const config = { level: 'warning', custom: 'value' };
     setConfig(config);
-    expect(configSpy.args).to.eql([[config]]);
+    expect(configSpy).calledWith(config);
   });
 
   it('emits "request" event only for matching requests', () => {
