@@ -142,12 +142,13 @@ Each command invocation overwrites any previous settings.
 set-log-level [options...] [<level>]
 ```
 #### Options
-* -l, --url \<regex> - matches request URL (without protocol, host, port)
-* -h, --header \<name>:\<regex> - matches given request header value
-* -i, --ip \<regex> - matches sender IP address
-* -x, --expire \<value> - expiration time with `s/m/h` suffix
-* -r, --reset - reset log level to default (do not provide level)
-* \<level> - log level to use for matching requests, supported values depend on your log library
+* `-l, --url <regex>` - matches request URL (without protocol, host, port)
+* `-h, --header <name>:<regex>` - matches given request header value
+* `-i, --ip <regex>` - matches sender IP address
+* `-x, --expire <value>` - expiration time with `s/m/h` suffix
+* `-r, --reset` - reset log level to default (do not provide level)
+* `--help` - print usage
+* `<level>` - log level to use for matching requests, supported values depend on your log library
 
 #### Invoke via CF task
 This will start a temporary instance of the application, run the task inside and stop that instance.
