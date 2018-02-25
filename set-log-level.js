@@ -11,14 +11,18 @@ const redis = require('redis');
 const timeParse = require('timeparse');
 const { LOG_CONFIG_KEY, readRedisOptions } = require('./lib/common');
 
+const allOptions = {
+  url: 'l',
+  header: 'h',
+  ip: 'i',
+  expire: 'x',
+  reset: 'r',
+  help: undefined,
+  _: undefined
+};
+
 const cmdOptions = cmdParse(process.argv.slice(2), {
-  alias: {
-    l: 'url',
-    h: 'header',
-    i: 'ip',
-    x: 'expire',
-    r: 'reset'
-  }
+  alias: _.omit(_.invert(allOptions), undefined)
 });
 debug('Command line options:', cmdOptions);
 
@@ -33,6 +37,12 @@ try {
 function execute(cmdOptions) {
   function noOptions(options) {
     return Object.keys(options).length === 1 && options._.length === 0;
+  }
+
+  let validOptions = new Set([].concat(...Object.entries(allOptions)));
+  for (let opt in cmdOptions) {
+    assert(validOptions.has(opt),
+      `Invalid option ${opt}. Run 'set-log-level --help' to see usage.`);
   }
 
   if (cmdOptions.help || noOptions(cmdOptions)) {
@@ -56,13 +66,14 @@ Options:
       'No other options allowed with reset'
     );
   } else {
-    assert(cmdOptions._.length === 1, 'Provide exactly one log level');
+    assert(cmdOptions._.length === 1, 
+      "Provide exactly one log level. Run 'set-log-level --help' to see usage.");
     var level = cmdOptions._[0];
   }
 
   let headers = _.reduce(cmdOptions.header, (result, h) => {
     let i = h.indexOf(':');
-    assert(i > 0, 'headers');
+    assert(i > 0, `Invalid header ${h}. Run 'set-log-level --help' to see usage.`);
     result[h.slice(0, i).trim()] = h.slice(i + 1).trim();
   }, {});
 
