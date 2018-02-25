@@ -95,6 +95,7 @@ app.use((req, res, next) => {
 });
 ```
 
+See example applications in [examples](examples) folder.
 #### niveau([options])
 * `options` Redis connection [options](https://github.com/NodeRedis/node_redis#rediscreateclient) + additional properties:
   * `redisKey` name of the Redis key that stores the configuration, default is `log-config`

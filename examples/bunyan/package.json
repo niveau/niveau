@@ -1,0 +1,13 @@
+{
+  "name": "bunyan-example",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "node server.js",
+    "redis": "docker run -d -p 6379:6379 --rm redis"
+  },
+  "dependencies": {
+    "bunyan": "^1.8.12",
+    "express": "^4.16.2",
+    "niveau": "file:../.."
+  }
+}
