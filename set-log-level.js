@@ -39,7 +39,7 @@ function execute(cmdOptions) {
     return Object.keys(options).length === 1 && options._.length === 0;
   }
 
-  let validOptions = new Set([].concat(...Object.entries(allOptions)));
+  let validOptions = new Set(_.flatten(_.entries(allOptions)));
   for (let opt in cmdOptions) {
     assert(validOptions.has(opt),
       `Invalid option ${opt}. Run 'set-log-level --help' to see usage.`);
@@ -66,7 +66,7 @@ Options:
       'No other options allowed with reset'
     );
   } else {
-    assert(cmdOptions._.length === 1, 
+    assert(cmdOptions._.length === 1,
       "Provide exactly one log level. Run 'set-log-level --help' to see usage.");
     var level = cmdOptions._[0];
   }
