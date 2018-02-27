@@ -1,0 +1,13 @@
+{
+  "name": "winston-example",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "node server.js",
+    "redis": "docker run -d -p 6379:6379 --rm redis"
+  },
+  "dependencies": {
+    "express": "^4.16.2",
+    "niveau": "file:../..",
+    "winston": "^2.4.0"
+  }
+}
