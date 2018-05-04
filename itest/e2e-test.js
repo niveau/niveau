@@ -70,6 +70,28 @@ describe('End-to-end tests', function () {
     ], done);
   });
 
+  it('change log level for requests with matching header', done => {
+    exec('./set-log-level.js --header x-abc:xyz warning');
+    async.parallel([
+      cb => app.get('/').set('x-abc', '123xyz456').expect('A: warning', cb),
+      cb => app.get('/').expect('A: undefined', cb)
+    ], done);
+  });
+
+  it('change log level for requests with matching 2 headers', done => {
+    exec('./set-log-level.js -h abc:def -h klm:nop warning');
+    async.parallel([
+      cb => app.get('/').
+        set('abc', 'def').
+        set('klm', 'nop').
+        expect('A: warning', cb),
+      cb => app.get('/').
+        set('abc', 'def').
+        set('klm', 'no-match').
+        expect('A: undefined', cb)
+    ], done);
+  });
+
   it('log config expires', done => {
     exec('./set-log-level.js error --expire 1s');
     async.series([
