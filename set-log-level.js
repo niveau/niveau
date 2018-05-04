@@ -71,11 +71,15 @@ Options:
     var level = cmdOptions._[0];
   }
 
-  let headers = _.reduce(cmdOptions.header, (result, h) => {
-    let i = h.indexOf(':');
-    assert(i > 0, `Invalid header ${h}. Run 'set-log-level --help' to see usage.`);
-    result[h.slice(0, i).trim()] = h.slice(i + 1).trim();
-  }, {});
+  if (_.isString(cmdOptions.header)) {
+    cmdOptions.header = [cmdOptions.header];
+  }
+  let headers = _.fromPairs(_.map(cmdOptions.header, h => {
+    let match = /^([^:]+):(.+)$/.exec(h);
+    assert(match && match.length === 3,
+      `Invalid header ${h}. Use the format <name>:<regex>`);
+    return [match[1].trim(), match[2].trim()];
+  }));
   headers = _.isEmpty(headers) ? undefined : headers;
 
   let expire;
