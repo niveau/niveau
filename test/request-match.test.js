@@ -13,6 +13,11 @@ describe('request-match', () => {
     };
   });
 
+  it('matches missing criteria', () => {
+    expect(match(req, undefined)).to.be.true;
+    expect(match(req, null)).to.be.true;
+  });
+
   it('matches connection remote ip', () => {
     req.connection.remoteAddress = '1.2.3.4';
     expect(match(req, { ip: /^1\.2\./ })).to.be.true;

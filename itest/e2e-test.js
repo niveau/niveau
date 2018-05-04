@@ -79,6 +79,32 @@ describe('End-to-end tests', function () {
     ], done);
   });
 
+  describe('Log configuration', () => {
+    it('is null if no config is set', done => {
+      exec('./set-log-level.js --reset');
+      app.get('/log-config').expect(200, { logConfig: null }, done);
+    });
+
+    it('contains only the log level if only that is set', done => {
+      exec('./set-log-level.js debug');
+      app.get('/log-config').expect(200, { logConfig: { level: 'debug' }}, done);
+    });
+
+    it('headers is not set if empty', done => {
+      exec('./set-log-level.js --url /abc debug');
+      app.get('/log-config').expect(200,
+        {
+          logConfig: {
+            request: {
+              url: {} // regex
+            },
+            level: 'debug'
+          }
+        },
+        done);
+    });
+  });
+
   describe('Multiple apps', () => {
     before('Start second app', done => {
       exec('./set-log-level.js silly');

@@ -10,6 +10,11 @@ let nv = niveau();
 
 let app = express();
 app.use(nv);
+
+app.get('/log-config', (req, res) => {
+  res.send({ logConfig: nv.logConfig });
+});
+
 app.use((req, res) => {
   res.send(`${name}: ${req.logLevel}`);
 });
