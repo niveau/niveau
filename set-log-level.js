@@ -76,6 +76,7 @@ Options:
     assert(i > 0, `Invalid header ${h}. Run 'set-log-level --help' to see usage.`);
     result[h.slice(0, i).trim()] = h.slice(i + 1).trim();
   }, {});
+  headers = _.isEmpty(headers) ? undefined : headers;
 
   let expire;
   if (cmdOptions.expire) {
@@ -84,12 +85,14 @@ Options:
     }
   }
 
+  let request = {
+    url: cmdOptions.url,
+    ip: cmdOptions.ip,
+    headers
+  };
+  request = _.some(request, v => v !== undefined) ? request : undefined;
   let logConfig = {
-    request: {
-      url: cmdOptions.url,
-      ip: cmdOptions.ip,
-      headers
-    },
+    request,
     // requestCounterKey: 'counter-name',
     level
   };
@@ -111,8 +114,9 @@ Options:
         client.quit();
       });
     } else {
-      debug('redis SET %s', LOG_CONFIG_KEY, logConfig);
-      let params = [LOG_CONFIG_KEY, JSON.stringify(logConfig)];
+      let value = JSON.stringify(logConfig);
+      debug('redis SET %s %s', LOG_CONFIG_KEY, value);
+      let params = [LOG_CONFIG_KEY, value];
       expire && params.push('EX', expire);
       client.set(params, (err, reply) => {
         err ? console.error('redis SET:', err) : debug('redis:', reply);

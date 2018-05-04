@@ -92,6 +92,7 @@ let app = express();
 app.use(nv);
 app.use((req, res, next) => {
   // req.logLevel - the log level to be used for this request (if present)
+  // nv.logConfig - the current log configuration
 });
 ```
 
@@ -103,6 +104,9 @@ See example applications in [examples](examples) folder.
 Creates _niveau_ middleware. It matches incoming requests against the criteria in the log configuration.
 For matching requests it sets `logLevel` property on the request object to the log level from the configuration.
 
+If `options` is not provided, use bound Redis service.
+If no Redis service is bound, use local Redis on default port.
+
 The middleware also listens for log configuration changes and emits some events.
 
 #### Event 'error'
@@ -113,7 +117,7 @@ Emitted in case of error, e.g. Redis connection failed.
 
 #### Event 'config'
 Event arguments:
-* `config` [log configuration](#log-configuration) object
+* `config` [log configuration](#log-configuration) object, `null` if no configuration is set
 
 Emitted when log configuration is changed or deleted.
 
@@ -124,13 +128,17 @@ Event arguments:
 
 Emitted when an HTTP request matches the criteria in the log configuration.
 
+#### nv.logConfig
+Contains the current [log configuration](#log-configuration).
+It is `null` if no log configuration is set.
+
 #### Log configuration
 Log configuration object:
-* `request` request matching criteria,
+* `request` (optional) request matching criteria,
 if missing or empty, the log level should be used for all requests
-  * `url` `RegExp` to match against the request URL
-  * `ip` `RegExp` to match against the client IP address
-  * `headers` an object to match against request headers, each values is a `RegExp`
+  * `url` (optional) `RegExp` to match against the request URL
+  * `ip` (optional) `RegExp` to match against the client IP address
+  * `headers` (optional) an object to match against request headers, each values is a `RegExp`
 * `level` log level as a string to use for matching requests
 
 ### Changing the log level
