@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/niveau/niveau.svg?branch=master)](https://travis-ci.org/niveau/niveau)
 [![Greenkeeper badge](https://badges.greenkeeper.io/niveau/niveau.svg)](https://greenkeeper.io/)
+[![npm](https://img.shields.io/npm/v/niveau.svg)](https://www.npmjs.com/package/niveau)
 
 # niveau
 
