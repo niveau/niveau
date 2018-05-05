@@ -9,7 +9,8 @@
     "preitest": "npm run pretest",
     "itest": "nyc mocha test itest",
     "coverage": "nyc report --reporter=html && echo Open coverage/index.html",
-    "redis": "docker run -d -p 6379:6379 --rm redis",
+    "start-redis": "docker run -d -p 6379:6379 --rm --name redis-niveau redis",
+    "stop-redis": "docker stop redis-niveau",
     "toc": "markdown-toc -i README.md"
   },
   "bin": {

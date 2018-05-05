@@ -197,7 +197,7 @@ Integration tests require Redis to run on localhost on default port 6379.
 Install [docker], unless you have it already.
 Start Redis:
 ```sh
-npm run redis
+npm run start-redis
 ```
 Run the integration tests against Redis:
 ```sh
@@ -206,6 +206,10 @@ npm run itest
 Generate test coverage report:
 ```sh
 npm run coverage
+```
+When done stop Redis:
+```sh
+npm run stop-redis
 ```
 
 After editing README.md update its table of contents:
