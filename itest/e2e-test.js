@@ -5,6 +5,7 @@ const _ = require('lodash');
 const async = require('async');
 const request = require('supertest');
 const debug = require('debug')('niveau:e2e-test');
+const expect = require('chai').expect;
 
 function exec(cmd) {
   return proc.execSync(cmd, { encoding: 'utf8' });
@@ -156,4 +157,13 @@ describe('End-to-end tests', function () {
     });
   });
 
+  describe('set-log-level', () => {
+    it('prints usage if invoked without arguments', () => {
+      expect(() => exec('./set-log-level.js')).to.throw('Usage:');
+    });
+
+    it('fails on invalid argument', () => {
+      expect(() => exec('./set-log-level.js --badarg')).to.throw();
+    });
+  });
 });

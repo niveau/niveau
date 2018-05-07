@@ -15,5 +15,5 @@ try {
 function error(err) {
   debug(err)
   console.error(err.message);
-  process.exit(err.exitCode || 1);
+  process.exit(1);
 }
