@@ -38,7 +38,7 @@
   "dependencies": {
     "async": "^2.6.0",
     "cf-services": "^2.0.1",
-    "debug": "^3.1.0",
+    "debug": "^4.0.0",
     "lodash": "^4.17.4",
     "minimatch": "^3.0.4",
     "minimist": "^1.2.0",
