@@ -42,7 +42,7 @@
     "lodash": "^4.17.4",
     "minimatch": "^3.0.4",
     "minimist": "^1.2.0",
-    "redis": "^2.8.0",
+    "redis": "^3.0.0",
     "timeparse": "^1.0.0",
     "verror": "^1.10.0"
   },
