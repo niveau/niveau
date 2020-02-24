@@ -36,7 +36,7 @@
   },
   "homepage": "https://github.com/niveau/niveau#readme",
   "dependencies": {
-    "async": "^2.6.0",
+    "async": "^3.2.0",
     "cf-services": "^2.0.1",
     "debug": "^4.0.0",
     "lodash": "^4.17.4",
